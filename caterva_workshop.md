@@ -38,3 +38,17 @@ TODO
 +++ {"slideshow": {"slide_type": "fragment"}}
 
 Build using a myst file.
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+import numpy as np
+
+print(np.__version__)
+```
+
+```{code-cell} ipython3
+
+```
