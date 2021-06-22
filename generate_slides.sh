@@ -11,5 +11,6 @@ echo "Cleaning up..."
 rm *.ipynb
 
 mv html/caterva_workshop.nbconvert.slides.html html/index.html
+cp -r static html
 
 echo "Done!";
