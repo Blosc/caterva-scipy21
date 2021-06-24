@@ -22,7 +22,9 @@ The Blosc Developers. SciPy Conference 2021.
 
 ## Who we are?
 
-TODO
+
+Caterva is an open source project that has been created by Aleix Alcacer, member of the Blosc Development Team. The leader and founder of this group is Francesc Alted,
+an open source enthusiast responsible of projects like PyTables or Blosc.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -40,15 +42,19 @@ TODO
 
 ## Background
 
-Talk about chunking, compression...
+To understand Caterva it is important to know some terms that are directly related to it.
 
-Describe some real-world use cases where these concepts are used.
+Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size.
+
+Otherwise, chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks).
+
+Compression is really used for a great variety of data types and sizes, both in everyday leisure situations of a standard user such as compressing a photo or video, as well as for organizations that store large amounts of data. However, chunking is a more specific domain concept and is usually more related to Big Data and projects where decompression speed is important.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Introduction
 
-Describe Caterva
+Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way.
 
 ```{code-cell} ipython3
 ---
@@ -65,6 +71,11 @@ print(cat.__version__)
 ## Double partitioning
 
 ![title](static/two-level-chunking-slice.png)
+
+Caterva stores data into multidimensional chunks, which makes slices extraction more efficient since only the chunks containing the slices are decompressed instead 
+of the entire superchunk. Caterva also introduces a new level of chunking. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks. 
+In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks 
+containing the slice instead of the whole chunks.
 
 ```{code-cell} ipython3
 ---
@@ -261,10 +272,7 @@ slideshow:
 
 ## No data type information
 
-PROS
-
-- Lightweight library
-- Allow users to define custom data types
+Caterva only stores variables itemsize instead of the type. This makes the library more lightweight and gives it a more general utility allowing users to define their own custom data types via metalayers.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -331,6 +339,11 @@ Explain the behaviour. Share the same buffer. No copies are made.
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Metalayers
+
+Metalayers are small metadata for informing about the kind of data that is stored on a Caterva container.
+Caterva specifies a metalayer on top of a Blosc2 container for storing multidimensional information. This metalayer can be modified so that the shapes can be updated.
+
+You can use metalayers for adapting Caterva containers to your own needs.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -416,7 +429,11 @@ cat.remove(urlpath)
 
 ### Iron Array
 
-Description. Introduce a metalayer on TOP of caterva storing the dtype.
+ironArray is a lightweight, flexible and fast toolkit for managing your data. It organizes your data into chunks that fit into the cache of your CPU, then uses 
+standard map, reduce, filter, and collect algorithms to perform calculations on large arrays directly in the high-speed CPU cache.
+Based on your preferences, it will tune your configuration to leverage your specific CPUs caches, memory and disks.
+
+Introduce a metalayer on TOP of caterva storing the dtype.
 
 ```{code-cell} ipython3
 # import iarrayce as ia
