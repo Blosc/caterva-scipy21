@@ -63,7 +63,7 @@ Todo:
 
 Caterva can be used for a great variety of datasets. However, when it really stands out is with multidimensional ones because not every library is prepared to handle these datasets once they are compressed. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, Caterva minimizes the amount of data it has to decompress to obtain the slice, and therefore the time it costs.
 
-Accordingly, for cases where the slicing performance is crucial Caterva turns out to be a good alternative to Zarr and HDF5.
+Accordingly, for cases where the slicing performance is crucial, Caterva turns out to be a good alternative to Zarr and HDF5.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -225,6 +225,8 @@ for i in planes_id1:
     block = h_data[:, i]
 ```
 
++++ {"slideshow": {"slide_type": "subslide"}}
+
 As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you simply have more to decompress the blocks affected by the slice (and not the chunks).
 
 For all this, Caterva can be a good alternative to these widely-used libraries in use cases similar to the one proposed.
@@ -232,7 +234,7 @@ For all this, Caterva can be a good alternative to these widely-used libraries i
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 %mprof_barplot --title "Getting data" --variable time --groupby 1 .*
 ```
@@ -240,7 +242,7 @@ slideshow:
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: skip
+  slide_type: '-'
 ---
 f.close()
 ```
@@ -377,7 +379,7 @@ slideshow:
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: skip
+  slide_type: '-'
 ---
 f.close()
 ```
@@ -603,7 +605,7 @@ We see that numba takes even more time than NumPy. This is probably because of t
 
 - Provide Python wheels: this will make the installation much more easier for the user.
 
-- Variable length for metalayers: this would provide a lot of flexibility when defining types of variables.
+- Introduce variable-length metalayers: this would provide users a lot of flexibility to define their own metadata.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -615,6 +617,6 @@ From the Caterva team we are glad to give a big thank to:
 
 - The NumFOCUS foundation for sponsoring Blosc.
 
-- Huawei for making a donation via NumFOCUS to start developing Caterva.
+- Huawei for making a donation that allowed us to get started with Caterva.
 
 - ironArray for making a donation to finish outlining Caterva.
