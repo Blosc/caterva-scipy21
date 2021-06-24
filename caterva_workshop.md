@@ -77,7 +77,12 @@ Accordingly, for cases where the slicing performance is crucial Caterva turns ou
 
 ## Double partitioning
 
-![title](static/two-level-chunking-slice.png)
+<!--
+    ![title](static/two-level-chunking-slice.png)
+-->
+
+
+<img src="static/two-level-chunking-slice.png" alt="Drawing" style="width: 50%;"/>
 
 Caterva stores data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire superchunk. Caterva also introduces a new level of chunking. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks. 
 In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks 
@@ -86,6 +91,10 @@ containing the slice instead of the whole chunks.
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Getting data
+
+In this section, we are going to extract some hyperplanes from chunked arrays created with Caterva, Zarr, and HDF5. We will also analyze the performance differences between these libraries and how double partitioning affects Caterva.
+
+In these three libraries, the data is stored using chunks of Blosc (that internaly are splitted in blocks). However, while Zarr and HDF5 only introduce multidimensionality for chunks, Caterva introduces it for both chunks and blocks.
 
 ```{code-cell} ipython3
 import zarr
@@ -98,7 +107,7 @@ import hdf5plugin as h5plugin
 
 +++ {"slideshow": {"slide_type": "-"}}
 
-First of all, we define the shape and the chunks and blocks for the arrays. As we can see, the second dimension is optimized to extract hyperslices.
+First of all, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
@@ -110,7 +119,7 @@ itemsize = dtype.itemsize
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Now, we create a Caterva array and a Zarr array from a Numpy array using the shapes defined before.
+Then, a Caterva array, a Zarr array and a HDF5 array are created from a Numpy array using the parameters defined before.
 
 ```{code-cell} ipython3
 data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
@@ -138,29 +147,14 @@ f.create_dataset("data", shape, chunks=chunks, data=data, **h5plugin.Blosc())
 h_data = f["data"]
 ```
 
-```{code-cell} ipython3
----
-cell_style: center
-slideshow:
-  slide_type: '-'
----
-c_data.info
-```
-
-```{code-cell} ipython3
-:cell_style: center
-
-z_data.info
-```
-
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Compression ratios are different due to data organitzation. Explain it!
+Finally, some hyperplanes from the chunked arrays are extracted and the performance is measured using the [*memprofiler*](https://github.com/aleixalcacer/memprofiler) plugin for jupyter.
 
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 planes_id0 = np.random.randint(0, shape[0], 100)
 ```
@@ -231,6 +225,10 @@ for i in planes_id1:
     block = h_data[:, i]
 ```
 
+As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you simply have more to decompress the blocks affected by the slice (and not the chunks).
+
+For all this, Caterva can be a good alternative to these widely-used libraries in use cases similar to the one proposed.
+
 ```{code-cell} ipython3
 ---
 slideshow:
@@ -240,12 +238,33 @@ slideshow:
 ```
 
 ```{code-cell} ipython3
+---
+slideshow:
+  slide_type: skip
+---
 f.close()
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Setting data
+
+
+Now, we are going to update some hyperplanes from chunked arrays created with Caterva, Zarr, and HDF5. as before, we will also analyze the performance differences between these libraries and how double partitioning affects Caterva.
+
++++
+
+First, some necessary parameters are defined.
+
+```{code-cell} ipython3
+shape = (8_000, 8_000)
+chunks = (4_000, 100)
+blocks = (500, 25)
+dtype = np.dtype("f8")
+itemsize = dtype.itemsize
+```
+
+Then, an empty array for each library are created with the previous parameters.
 
 ```{code-cell} ipython3
 ---
@@ -261,10 +280,14 @@ f.create_dataset("data", shape, chunks=chunks, **h5plugin.Blosc())
 h_data = f["data"]
 ```
 
++++ {"slideshow": {"slide_type": "subslide"}}
+
+Finally, some hyperplanes from the chunked arrays are updated and the performance is measured as in the previous section.
+
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 planes_id0 = np.random.randint(0, shape[0], 100)
 block_id0 = np.arange(shape[0], dtype=dtype)
@@ -337,15 +360,25 @@ for i in planes_id1:
     h_data[:, i] = block_id1
 ```
 
++++ {"slideshow": {"slide_type": "subslide"}}
+
+In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized version. Zarr has the worst performance and HDF5 overperforms Caterva.
+
+While Zarr and HDF5 have to *reorganize* the data in chunks, Caterva has to *reorganize* the data in *blocks* (less continuous data in memory).
+
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 %mprof_barplot --title "Setting data" --variable time --groupby 1 .*
 ```
 
 ```{code-cell} ipython3
+---
+slideshow:
+  slide_type: skip
+---
 f.close()
 ```
 
@@ -530,7 +563,7 @@ cat.remove(urlpath)
 
 ### Iron Array
 
-ironArray is an example of a library built on top of Caterva. It is a set of tools optimized for performing operations on floating-point data sets.
+ironArray is an example of a library built on top of Caterva. It is a lightweight, flexible and fast toolkit for managing floating-point datasets.
 
 The highlights of ironArray are:
 

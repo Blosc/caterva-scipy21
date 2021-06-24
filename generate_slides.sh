@@ -11,6 +11,7 @@ jupyter nbconvert --to slides --output-dir html caterva_workshop.nbconvert.ipynb
 
 echo "Cleaning up..."
 rm *.ipynb
+rm *.h5
 
 mv html/caterva_workshop.nbconvert.slides.html html/index.html
 cp -r static html
