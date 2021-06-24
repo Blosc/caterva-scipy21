@@ -91,7 +91,8 @@ containing the slice instead of the whole chunks.
 import zarr
 import caterva as cat
 import numpy as np
-
+import h5py as h5
+import hdf5plugin as h5plugin
 %load_ext memprofiler
 ```
 
@@ -101,8 +102,8 @@ First of all, we define the shape and the chunks and blocks for the arrays. As w
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
-chunks = (500, 50)
-blocks = (500, 10)
+chunks = (4_000, 100)
+blocks = (500, 25)
 dtype = np.dtype("f8")
 itemsize = dtype.itemsize
 ```
@@ -128,9 +129,13 @@ c_data = cat.asarray(data, chunks=chunks, blocks=blocks)
 slideshow:
   slide_type: '-'
 ---
-from numcodecs import Blosc
-
 z_data = zarr.array(data, chunks=chunks)
+```
+
+```{code-cell} ipython3
+f = h5.File('hdf5_file.h5', 'w', driver="core")
+f.create_dataset("data", shape, chunks=chunks, data=data, **h5plugin.Blosc())
+h_data = f["data"]
 ```
 
 ```{code-cell} ipython3
@@ -181,6 +186,17 @@ for i in planes_id0:
 ```{code-cell} ipython3
 ---
 slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::id0
+
+for i in planes_id0:
+    block = h_data[i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
   slide_type: subslide
 ---
 planes_id1 = np.random.randint(0, shape[1], 100)
@@ -207,9 +223,24 @@ for i in planes_id1:
 ```{code-cell} ipython3
 ---
 slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::id1
+
+for i in planes_id1:
+    block = h_data[:, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
   slide_type: subslide
 ---
-%mprof_barplot --title "Getting items" --variable time --groupby 1 .*
+%mprof_barplot --title "Getting data" --variable time --groupby 1 .*
+```
+
+```{code-cell} ipython3
+f.close()
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -224,6 +255,10 @@ slideshow:
 c_data = cat.empty(shape, itemsize, chunks=chunks, blocks=blocks)
 
 z_data = zarr.empty(shape, dtype=dtype, chunks=chunks)
+
+f = h5.File('hdf5_file.h5', 'w', driver="core")
+f.create_dataset("data", shape, chunks=chunks, **h5plugin.Blosc())
+h_data = f["data"]
 ```
 
 ```{code-cell} ipython3
@@ -256,6 +291,17 @@ for i in planes_id0:
 ```{code-cell} ipython3
 ---
 slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::id0
+
+for i in planes_id0:
+    h_data[i, :] = block_id0
+```
+
+```{code-cell} ipython3
+---
+slideshow:
   slide_type: subslide
 ---
 planes_id1 = np.random.randint(0, shape[1], 100)
@@ -283,9 +329,24 @@ for i in planes_id1:
 ```{code-cell} ipython3
 ---
 slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::id1
+
+for i in planes_id1:
+    h_data[:, i] = block_id1
+```
+
+```{code-cell} ipython3
+---
+slideshow:
   slide_type: subslide
 ---
-%mprof_barplot --variable time --groupby 1 .*
+%mprof_barplot --title "Setting data" --variable time --groupby 1 .*
+```
+
+```{code-cell} ipython3
+f.close()
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -469,18 +530,35 @@ cat.remove(urlpath)
 
 ### Iron Array
 
-ironArray is a lightweight, flexible and fast toolkit for managing large multidimensional arrays efficiently. 
-It allows computations with large datasets to make a more effective use of modern, cost-effective multi-core CPUs and fast, local storage.
-Specifically, it organizes your data into chunks that fit into the cache of your CPU, then uses standard map, reduce, filter, and collect algorithms to perform calculations on large arrays directly in the high-speed CPU cache.
-Furthermore, based on your preferences, ironArray will tune your configuration to leverage your specific CPUs caches, memory and disks.
+ironArray is an example of a library built on top of Caterva. It is a set of tools optimized for performing operations on floating-point data sets.
 
-Introduce a metalayer on TOP of caterva storing the dtype.
+The highlights of ironArray are:
+
+- High performance matrix and vector computations.
+- Automatic data compression and decompression.
+- Contiguous or sparse storage.
+- Tunable performance optimizations that leverage your specific CPUs caches, memory and disks.
+
+For more information about ironArray, see: https://ironarray.io
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+#### Example
 
 ```{code-cell} ipython3
 # import iarrayce as ia
 
 # Example of use
 ```
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+#### Computation performance
+
+In this plot, we can see the performance of ironArray (*ia*) computing the mean of three datasets against numba (*nb*) and numpy (*np*):
+![title](static/iron-array.png)
+
+We see that numba takes even more time than NumPy. This is probably because of the additional time required by the compilation step in numba. Memory wise the consumption is very low, but this is expected because we are reusing an existing NumPy array as the destination of the computation; in general, and for large datasets, the memory consumption of numba should be very close to NumPy.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
