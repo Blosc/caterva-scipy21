@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cp index.html.j2 .venv/share/jupyter/nbconvert/templates/reveal/
+
 echo "Converting from myst to ipynb..."
 jupytext --to ipynb caterva_workshop.md
 jupyter nbconvert --to notebook --execute caterva_workshop.ipynb

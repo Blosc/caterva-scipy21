@@ -31,11 +31,12 @@ an open source enthusiast responsible of projects like PyTables or Blosc.
 ## Poster Outline
 
 1. Background
-1. Introduction
-1. Double partitioning. Slicing performance
-1. No type information
-1. Metalayers. ironArray
-1. Multiple formats
+1. Why Caterva?
+1. Main features
+    1. Double partitioning
+    1. No data type info
+    1. Metalayers. ironArray
+    1. Multiple formats
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -50,21 +51,11 @@ Otherwise, chunking is a technique that consists of dividing a dataset into part
 
 Compression is really used for a great variety of data types and sizes, both in everyday leisure situations of a standard user such as compressing a photo or video, as well as for organizations that store large amounts of data. However, chunking is a more specific domain concept and is usually more related to Big Data and projects where decompression speed is important.
 
-+++ {"slideshow": {"slide_type": "slide"}}
++++ {"slideshow": {"slide_type": "slide"}, "cell_style": "center"}
 
-## Introduction
+## What is Caterva?
 
 Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way.
-
-```{code-cell} ipython3
----
-slideshow:
-  slide_type: fragment
----
-import caterva as cat
-
-print(cat.__version__)
-```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -78,17 +69,16 @@ In this way, Caterva can read blocks individually (and also in parallel) instead
 containing the slice instead of the whole chunks.
 
 ```{code-cell} ipython3
----
-slideshow:
-  slide_type: subslide
----
-import caterva
-import numpy as np
 import zarr
 import caterva as cat
+import numpy as np
 
 %load_ext memprofiler
 ```
+
++++ {"slideshow": {"slide_type": "-"}}
+
+First of all, we define the shape and the chunks and blocks for the arrays. As we can see, the second dimension is optimized to extract hyperslices.
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
@@ -98,9 +88,9 @@ dtype = np.dtype("f8")
 itemsize = dtype.itemsize
 ```
 
-+++ {"slideshow": {"slide_type": "slide"}}
++++ {"slideshow": {"slide_type": "subslide"}}
 
-## Getting items
+Now, we create a Caterva array and a Zarr array from a Numpy array using the shapes defined before.
 
 ```{code-cell} ipython3
 data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
@@ -109,21 +99,32 @@ data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 c_data = cat.asarray(data, chunks=chunks, blocks=blocks)
-
-c_data.info
 ```
 
 ```{code-cell} ipython3
 ---
 slideshow:
-  slide_type: subslide
+  slide_type: '-'
 ---
 from numcodecs import Blosc
 
 z_data = zarr.array(data, chunks=chunks)
+```
+
+```{code-cell} ipython3
+---
+cell_style: split
+slideshow:
+  slide_type: '-'
+---
+c_data.info
+```
+
+```{code-cell} ipython3
+:cell_style: split
 
 z_data.info
 ```
