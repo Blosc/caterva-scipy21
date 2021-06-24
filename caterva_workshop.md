@@ -16,7 +16,7 @@ kernelspec:
 
 # Caterva: a multidimensional container with double partitioning
 
-The Blosc Developers. SciPy Conference 2021.
+The Blosc Developer Team. SciPy Conference 2021.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -32,11 +32,9 @@ an open source enthusiast responsible of projects like PyTables or Blosc.
 
 1. Background
 1. Why Caterva?
-1. Main features
     1. Double partitioning
     1. No data type info
     1. Metalayers. ironArray
-    1. Multiple formats
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -45,17 +43,39 @@ an open source enthusiast responsible of projects like PyTables or Blosc.
 
 To understand Caterva it is important to know some terms that are directly related to it.
 
-Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size.
+- Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size.
 
-Otherwise, chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks).
+- Chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks).
 
-Compression is really used for a great variety of data types and sizes, both in everyday leisure situations of a standard user such as compressing a photo or video, as well as for organizations that store large amounts of data. However, chunking is a more specific domain concept and is usually more related to Big Data and projects where decompression speed is important.
+Explain a bit more?
 
 +++ {"slideshow": {"slide_type": "slide"}, "cell_style": "center"}
 
-## What is Caterva?
+## Why Caterva?
 
 Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way.
+
+Todo:
+
+- Insert Caterva image
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+### Use cases
+
+Develop:
+
+- Extract slices of compressed data without decompress all the dataset
+
+- Alternative to zarr/hdf5 when the slicing performance (speed?) is crucial.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## Main features
+
+1. **Double partitioning. Getting and setting data**
+1. No data type info
+1. Metalayers. ironArray
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -67,6 +87,10 @@ Caterva stores data into multidimensional chunks, which makes slices extraction 
 of the entire superchunk. Caterva also introduces a new level of chunking. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks. 
 In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks 
 containing the slice instead of the whole chunks.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+### Getting data
 
 ```{code-cell} ipython3
 import zarr
@@ -116,7 +140,7 @@ z_data = zarr.array(data, chunks=chunks)
 
 ```{code-cell} ipython3
 ---
-cell_style: split
+cell_style: center
 slideshow:
   slide_type: '-'
 ---
@@ -124,7 +148,7 @@ c_data.info
 ```
 
 ```{code-cell} ipython3
-:cell_style: split
+:cell_style: center
 
 z_data.info
 ```
@@ -195,7 +219,7 @@ slideshow:
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-## Setting items
+### Setting data
 
 ```{code-cell} ipython3
 ---
@@ -271,7 +295,15 @@ slideshow:
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-## No data type information
+## Main features
+
+1. Double partitioning. Getting and setting data
+1. **No data type info**
+1. Metalayers. ironArray
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## No data type info
 
 Caterva only stores variables itemsize instead of the type. This makes the library more lightweight and gives it a more general utility allowing users to define their own custom data types via metalayers.
 
@@ -324,6 +356,10 @@ c
 Explain that a cast is needed
 
 ```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
 c = np.asarray(b).view(dtype)
 
 c
@@ -336,6 +372,14 @@ c
 ```
 
 Explain the behaviour. Share the same buffer. No copies are made.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## Main features
+
+1. Double partitioning. Getting and setting data
+1. No data type info
+1. **Metalayers. ironArray**
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -426,7 +470,7 @@ print(f"Blocks: {caterva_meta[4]}")
 cat.remove(urlpath)
 ```
 
-+++ {"slideshow": {"slide_type": "subslide"}}
++++ {"slideshow": {"slide_type": "slide"}}
 
 ### Iron Array
 
@@ -441,3 +485,21 @@ Introduce a metalayer on TOP of caterva storing the dtype.
 
 # Example of use
 ```
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## Future Work
+
+Todo. Use ROADMAP.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## Acknowledgments
+
+SciPy? permitir participar en el congreso
+
+Numfocus? sponsorizar Blosc
+
+Huawei? donación proyecto (empezar a desarrollar Caterva)
+
+ironArray? donación proyecto (terminar de perfilar Caterva)
