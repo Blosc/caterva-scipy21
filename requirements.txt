@@ -8,3 +8,5 @@ zarr==2.8.3
 pandas  # Fix
 msgpack  # Fix
 ndindex  # Fix
+h5py
+hdf5plugin
