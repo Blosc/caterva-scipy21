@@ -43,17 +43,15 @@ an open source enthusiast responsible of projects like PyTables or Blosc.
 
 To understand Caterva it is important to know some terms that are directly related to it.
 
-- Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size.
+- Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size. Caterva usually works with compressed datasets, making easier to the user to manipulate this processed data.
 
-- Chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks).
-
-Explain a bit more?
+- Data chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks). Caterva algorithms implement a deeper level of this strategy to achieve better performance.
 
 +++ {"slideshow": {"slide_type": "slide"}, "cell_style": "center"}
 
 ## Why Caterva?
 
-Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way.
+Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way. Moreover, there exists not only a Caterva GitHub repository in C, but also a Caterva API in Python.
 
 Todo:
 
@@ -63,11 +61,9 @@ Todo:
 
 ### Use cases
 
-Develop:
+Caterva can be used for a great variety of datasets. However, when it really stands out is with multidimensional ones because not every library is prepared to handle these datasets once they are compressed. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, Caterva minimizes the amount of data it has to decompress to obtain the slice, and therefore the time it costs.
 
-- Extract slices of compressed data without decompress all the dataset
-
-- Alternative to zarr/hdf5 when the slicing performance (speed?) is crucial.
+Accordingly, for cases where the slicing performance is crucial Caterva turns out to be a good alternative to Zarr and HDF5.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -83,8 +79,7 @@ Develop:
 
 ![title](static/two-level-chunking-slice.png)
 
-Caterva stores data into multidimensional chunks, which makes slices extraction more efficient since only the chunks containing the slices are decompressed instead 
-of the entire superchunk. Caterva also introduces a new level of chunking. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks. 
+Caterva stores data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire superchunk. Caterva also introduces a new level of chunking. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks. 
 In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks 
 containing the slice instead of the whole chunks.
 
@@ -474,9 +469,10 @@ cat.remove(urlpath)
 
 ### Iron Array
 
-ironArray is a lightweight, flexible and fast toolkit for managing your data. It organizes your data into chunks that fit into the cache of your CPU, then uses 
-standard map, reduce, filter, and collect algorithms to perform calculations on large arrays directly in the high-speed CPU cache.
-Based on your preferences, it will tune your configuration to leverage your specific CPUs caches, memory and disks.
+ironArray is a lightweight, flexible and fast toolkit for managing large multidimensional arrays efficiently. 
+It allows computations with large datasets to make a more effective use of modern, cost-effective multi-core CPUs and fast, local storage.
+Specifically, it organizes your data into chunks that fit into the cache of your CPU, then uses standard map, reduce, filter, and collect algorithms to perform calculations on large arrays directly in the high-speed CPU cache.
+Furthermore, based on your preferences, ironArray will tune your configuration to leverage your specific CPUs caches, memory and disks.
 
 Introduce a metalayer on TOP of caterva storing the dtype.
 
@@ -490,16 +486,24 @@ Introduce a metalayer on TOP of caterva storing the dtype.
 
 ## Future Work
 
-Todo. Use ROADMAP.
+- Resize array dimensions: this will allow to increase or decrease in size any dimension of the arrays.
+
+- Improve slicing capabilities: currently Caterva only supports basic slicing based on start:stop ranges; we would like to extend this to start:stop:step as well as selections based on an array of booleans (similar to NumPy).
+
+- Provide Python wheels: this will make the installation much more easier for the user.
+
+- Variable length for metalayers: this would provide a lot of flexibility when defining types of variables.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Acknowledgments
 
-SciPy? permitir participar en el congreso
+From the Caterva team we are glad to give a big thank to:
 
-Numfocus? sponsorizar Blosc
+- SciPy for allowing us to participate in the congress.
 
-Huawei? donación proyecto (empezar a desarrollar Caterva)
+- The NumFOCUS foundation for sponsoring Blosc.
 
-ironArray? donación proyecto (terminar de perfilar Caterva)
+- Huawei for making a donation via NumFOCUS to start developing Caterva.
+
+- ironArray for making a donation to finish outlining Caterva.
