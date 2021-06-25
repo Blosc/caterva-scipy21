@@ -725,7 +725,7 @@ The Blosc team would like to thank our sponsors:
 
 - Huawei for making a generous donation that allowed us to get started with Caterva.
 
-- The NumFOCUS foundation for many different.
+- The NumFOCUS foundation for several small development grants (SDG).
 
 - ironArray SL for making a donation to finish outlining Caterva.
 
