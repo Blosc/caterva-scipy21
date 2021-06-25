@@ -32,7 +32,7 @@ Caterva is an open source project that has been mainly developed by the Blosc De
 
 - Oscar Guiñon (@OscarGM98), who collaborated in implementing the multidimensional blocks in Caterva.
 
-- Marta Iborra (@MartaIborra4), who is working in Blosc2 Python API.
+- Marta Iborra (@Marta_Iborra4), who is working in Blosc2 Python API.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -574,7 +574,7 @@ assert a.meta.get("date") == a.meta["date"]
 a.meta["date"]
 ```
 
-Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating. 
+Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating.
 
 ```{code-cell} ipython3
 a.meta["date"] = b"08/01/2021"
