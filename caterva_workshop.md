@@ -70,13 +70,20 @@ To understand Caterva it is important to know some terms that are directly relat
 
 ## Why Caterva?
 
-Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way. Moreover, there exists not only a Caterva GitHub repository in C, but also a Caterva API in Python.
+Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way. 
+
+* Performant: leverage double partitioning for fast slicing.
+* Metalayers: add metadata to your arrays.
+* Type-less: flexibly define your own data types as metalayers.
+* Open source: https://github.com/Blosc/python-caterva.
+
+
 
 Todo:
 
 - Insert Caterva image
 
-+++ {"slideshow": {"slide_type": "subslide"}}
++++ {"slideshow": {"slide_type": "slide"}}
 
 ### Use cases
 
@@ -106,7 +113,9 @@ Accordingly, for cases where the slicing performance is crucial, Caterva turns o
 
 <img src="static/two-level-chunking-slice.png" alt="Drawing" align="left" style="width: 50%;"/>
 
-Tradition chunking libraries store data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire array. In addition, Caterva also introduces a new level of partitioning. Within each chunk, the data is repartitioned into smaller multidimensional sets called blocks.
+Other chunking libraries store data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire array. 
+
+In addition, Caterva also introduces a new level of partitioning. Within each chunk, the data is repartitioned into smaller multidimensional sets called blocks.
 
 In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks containing the slice instead of the whole chunks.
 
@@ -141,7 +150,7 @@ itemsize = dtype.itemsize
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Then, a Caterva array, a Zarr array and a HDF5 array are created from a Numpy array using the parameters defined before.
+Then, a Caterva array, a Zarr array and a HDF5 array are created from a NumPy array using the parameters defined before.
 
 ```{code-cell} ipython3
 data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
@@ -178,13 +187,13 @@ Finally, some hyperplanes from the chunked arrays are extracted and the performa
 slideshow:
   slide_type: '-'
 ---
-planes_id0 = np.random.randint(0, shape[0], 100)
+planes_dim0 = np.random.randint(0, shape[0], 100)
 ```
 
 ```{code-cell} ipython3
-%%mprof_run -q caterva::id0
+%%mprof_run -q caterva::dim0
 
-for i in planes_id0:
+for i in planes_dim0:
     block = c_data[i, :]
 ```
 
@@ -193,9 +202,9 @@ for i in planes_id0:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q zarr::id0
+%%mprof_run -q zarr::dim0
 
-for i in planes_id0:
+for i in planes_dim0:
     block = z_data[i, :]
 ```
 
@@ -204,9 +213,9 @@ for i in planes_id0:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q hdf5::id0
+%%mprof_run -q hdf5::dim0
 
-for i in planes_id0:
+for i in planes_dim0:
     block = h_data[i, :]
 ```
 
@@ -215,13 +224,13 @@ for i in planes_id0:
 slideshow:
   slide_type: subslide
 ---
-planes_id1 = np.random.randint(0, shape[1], 100)
+planes_dim1 = np.random.randint(0, shape[1], 100)
 ```
 
 ```{code-cell} ipython3
-%%mprof_run -q caterva::id1
+%%mprof_run -q caterva::dim1
 
-for i in planes_id1:
+for i in planes_dim1:
     block = c_data[:, i]
 ```
 
@@ -230,9 +239,9 @@ for i in planes_id1:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q zarr::id1
+%%mprof_run -q zarr::dim1
 
-for i in planes_id1:
+for i in planes_dim1:
     block = z_data[:, i]
 ```
 
@@ -241,9 +250,9 @@ for i in planes_id1:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q hdf5::id1
+%%mprof_run -q hdf5::dim1
 
-for i in planes_id1:
+for i in planes_dim1:
     block = h_data[:, i]
 ```
 
@@ -261,16 +270,16 @@ slideshow:
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you simply have more to decompress the blocks affected by the slice (and not the chunks).
+As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you only have to decompress the blocks containing the slice instead of the hole chunk.
 
-For all this, Caterva can be a good alternative to these widely-used libraries in use cases similar to the one proposed.
+This is why Caterva can be a good alternative to these widely-used libraries.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Setting data
 
 
-Now, we are going to update some hyperplanes from chunked arrays created with Caterva, Zarr, and HDF5. as before, we will also analyze the performance differences between these libraries and how double partitioning affects Caterva.
+Now, we are going to update some hyperplanes from chunked arrays created with Caterva, Zarr, and HDF5. As before, we will also analyze the performance differences between these libraries and how double partitioning affects Caterva.
 
 +++
 
@@ -309,26 +318,15 @@ Finally, some hyperplanes from the chunked arrays are updated and the performanc
 slideshow:
   slide_type: '-'
 ---
-planes_id0 = np.random.randint(0, shape[0], 100)
-block_id0 = np.arange(shape[0], dtype=dtype)
+planes_dim0 = np.random.randint(0, shape[0], 100)
+block_dim0 = np.arange(shape[0], dtype=dtype)
 ```
 
 ```{code-cell} ipython3
-%%mprof_run -q caterva::id0
+%%mprof_run -q caterva::dim0
 
-for i in planes_id0:
-    c_data[i, :] = block_id0
-```
-
-```{code-cell} ipython3
----
-slideshow:
-  slide_type: '-'
----
-%%mprof_run -q zarr::id0
-
-for i in planes_id0:
-    z_data[i, :] = block_id0
+for i in planes_dim0:
+    c_data[i, :] = block_dim0
 ```
 
 ```{code-cell} ipython3
@@ -336,10 +334,21 @@ for i in planes_id0:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q hdf5::id0
+%%mprof_run -q zarr::dim0
 
-for i in planes_id0:
-    h_data[i, :] = block_id0
+for i in planes_dim0:
+    z_data[i, :] = block_dim0
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim0
+
+for i in planes_dim0:
+    h_data[i, :] = block_dim0
 ```
 
 ```{code-cell} ipython3
@@ -347,26 +356,15 @@ for i in planes_id0:
 slideshow:
   slide_type: subslide
 ---
-planes_id1 = np.random.randint(0, shape[1], 100)
-block_id1 = np.arange(shape[1], dtype=dtype)
+planes_dim1 = np.random.randint(0, shape[1], 100)
+block_dim1 = np.arange(shape[1], dtype=dtype)
 ```
 
 ```{code-cell} ipython3
-%%mprof_run -q caterva::id1
+%%mprof_run -q caterva::dim1
 
-for i in planes_id1:
-    c_data[:, i] = block_id1
-```
-
-```{code-cell} ipython3
----
-slideshow:
-  slide_type: '-'
----
-%%mprof_run -q zarr::id1
-
-for i in planes_id1:
-    z_data[:, i] = block_id1
+for i in planes_dim1:
+    c_data[:, i] = block_dim1
 ```
 
 ```{code-cell} ipython3
@@ -374,10 +372,21 @@ for i in planes_id1:
 slideshow:
   slide_type: '-'
 ---
-%%mprof_run -q hdf5::id1
+%%mprof_run -q zarr::dim1
 
-for i in planes_id1:
-    h_data[:, i] = block_id1
+for i in planes_dim1:
+    z_data[:, i] = block_dim1
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim1
+
+for i in planes_dim1:
+    h_data[:, i] = block_dim1
 ```
 
 ```{code-cell} ipython3
@@ -398,9 +407,9 @@ slideshow:
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized dimension. Zarr has the worst performance and HDF5 overperforms Caterva.
+In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized dimension.
 
-While Zarr and HDF5 have to *reorganize* the data in chunks, Caterva has to *reorganize* the data in *blocks* (less continuous data in memory).
+While Zarr and HDF5 only have to *reorganize* the data in chunks, Caterva has more work to do. As we explained, it also have to perform a second *reorganization* of the data because of the blocks repartition.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -426,7 +435,7 @@ Caterva only stores itemsize instead of the type. The reasons for doing this are
 
 ### Buffer and array protocol
 
-Despite not providing a specific data type, Caterva supports both the buffer and array protocol. To use them, it interprets the elements of the array as byte strings.
+Despite not providing a specific data type, Caterva supports both the buffer and array protocol. Lets see how it works!
 
 ```{code-cell} ipython3
 ---
@@ -450,7 +459,7 @@ for i in range(shape[0]):
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-When slices are extracted from Caterva, the result is still another Caterva array. However, this new array is not based on Blosc but on a simple buffer.
+When a slice is extracted from Caterva, the result is still another Caterva array. However, this new array is not based on Blosc but on a simple buffer.
 
 ```{code-cell} ipython3
 ---
@@ -464,11 +473,11 @@ b.info
 
 +++ {"slideshow": {"slide_type": "-"}}
 
-In this way, the protocols mentioned above can be used to work with slices of caterva arrays from other libraries.
+In this way, the protocols mentioned above can be used to work with slices of Caterva arrays from other libraries.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-But, what happen if we create a numpy array from a caterva array based on a simple buffer?
+But, what happen if we create a NumPy array from a Caterva array based on a simple buffer?
 
 ```{code-cell} ipython3
 ---
@@ -480,11 +489,14 @@ c = np.asarray(b)
 c
 ```
 
-As we can see, if we create a numpy array from a caterva array, de dtype infered is a byte string. However, the original data type is double. Thus, a cast is needed to obtain the desired array.
+As we can see, if we create a NumPy array from a Caterva array, the data type inferred is a byte string. Caterva 
+assigns internally this data type because it is needed to implement the protocols.
+
+In order tobtain the original array, a cast to the data has to be performed.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-To do that in Numpy, the `ndarray.view(dtype)` method can be used. In this case we want to view the numpy array as an array of doubles.
+To do this cast in NumPy, the `ndarray.view(dtype)` method can be used. In this case we want to view the NumPy array as an array of doubles.
 
 ```{code-cell} ipython3
 ---
@@ -496,7 +508,7 @@ c = np.asarray(b).view(dtype)
 c
 ```
 
-Finally, some elements of the caterva array are updated.
+Finally, here is what happens when some elements of the Caterva array are updated.
 
 ```{code-cell} ipython3
 b[0] = np.arange(5, dtype=dtype)
@@ -504,7 +516,9 @@ b[0] = np.arange(5, dtype=dtype)
 c
 ```
 
-As can be seen, these changes also appear in the numpy array. That is because the data buffer is shared between the Caterva array and the Numpy array. Therefore, having the buffer and array protocols allow Caterva to share data between different libraries with 0 copies.
+As can be seen, the updates also appear in the NumPy array. That is because the data buffer is shared between the 
+Caterva array and the NumPy array. Therefore, having the buffer and array protocols allow Caterva to share data 
+between different libraries without copies.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -623,22 +637,44 @@ For more information about ironArray, see: https://ironarray.io
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### Example
+#### ironArray CE
+
+ironArray CE is the open source part of ironArray. It implements the support for simple and double floating-point data using a metalayer. With ironArray CE you can extract slices from floating-point datasets in a simple way!
 
 ```{code-cell} ipython3
 # import iarrayce as ia
+# import numpy as np
 
-# Example of use
+# shape = (1_000, 1_000)
+
+# chunks = (500, 500)
+# blocks = (100, 100)
+# dtype = np.float64
+
+# data = ia.zeros(shape, dtype=dtype, chunks=chunks, blocks=blocks, codec=ia.Codec.LZ4)
+
+# data.info
+```
+
+```{code-cell} ipython3
+# data[0] = np.linspace(0, 1, shape[1], dtype=dtype)
+
+# s = data[1, 20:-80]
+
+# s
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 #### Computation performance
 
-In this plot, we can see the performance of ironArray (*ia*) computing the mean of three datasets against numba (*nb*) and numpy (*np*):
-![title](static/iron-array.png)
+In this plot, we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
 
-We see that numba takes even more time than NumPy. This is probably because of the additional time required by the compilation step in numba. Memory wise the consumption is very low, but this is expected because we are reusing an existing NumPy array as the destination of the computation; in general, and for large datasets, the memory consumption of numba should be very close to NumPy.
+<div style="text-align: center;">
+    <img src="static/iron-array.png" alt="Drawing" style="width: 75%;"/>
+</div>
+
+The nice thing about ironArray is that it lets you dial what you prefer very easily: choose between speed, compression ratio or a balance among the two (the default) at your will. And it will do this while keeping very good execution times.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
