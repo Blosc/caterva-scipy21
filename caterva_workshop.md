@@ -26,7 +26,7 @@ Caterva is an open source project that has been mainly developed by the Blosc De
 
 - Aleix Alcacer (@aleixalcacer), who created Caterva and developed most of its code. 
 
-- Francesc Alted (@FrancescAlted), the leader and founder of this group. He is an open source enthusiast responsible of projects like PyTables or Blosc. 
+- Francesc Alted (@FrancescAlted), the leader and founder of this group. He is an open source enthusiast responsible for projects like PyTables or Blosc. 
 
 - Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
 
@@ -125,7 +125,7 @@ In this way, Caterva can read blocks individually (and also in parallel) instead
 
 In this section, we are going to extract some hyperplanes from chunked arrays created with Caterva, Zarr, and HDF5. We will also analyze the performance differences between these libraries and how double partitioning affects Caterva.
 
-In these three libraries, the data is stored using chunks of Blosc (that internaly are splitted in blocks). However, while Zarr and HDF5 only introduce multidimensionality for chunks, Caterva introduces it for both chunks and blocks.
+In these three libraries, the data is stored using chunks of Blosc (that internally are split in blocks). However, while Zarr and HDF5 only introduce multidimensionality for chunks, Caterva introduces it for both chunks and blocks.
 
 ```{code-cell} ipython3
 import zarr
@@ -138,7 +138,7 @@ import hdf5plugin as h5plugin
 
 +++ {"slideshow": {"slide_type": "-"}}
 
-First of all, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
+First, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
@@ -150,7 +150,7 @@ itemsize = dtype.itemsize
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Then, a Caterva array, a Zarr array and a HDF5 array are created from a NumPy array using the parameters defined before.
+Then, a Caterva array, a Zarr array, and a HDF5 array are created from a NumPy array using the parameters defined before.
 
 ```{code-cell} ipython3
 data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
@@ -409,7 +409,8 @@ slideshow:
 
 In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized dimension.
 
-While Zarr and HDF5 only have to *reorganize* the data in chunks, Caterva has more work to do. As we explained, it also have to perform a second *reorganization* of the data because of the blocks repartition.
+While Zarr and HDF5 only have to *reorganize* the data in chunks, Caterva has more work to do. As we explained, it 
+also has to perform a second *reorganization* of the data because of the blocks repartition.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -492,7 +493,7 @@ c
 As we can see, if we create a NumPy array from a Caterva array, the data type inferred is a byte string. Caterva 
 assigns internally this data type because it is needed to implement the protocols.
 
-In order tobtain the original array, a cast to the data has to be performed.
+In order to obtain the original array, a cast to the data has to be performed.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
