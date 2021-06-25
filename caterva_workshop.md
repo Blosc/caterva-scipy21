@@ -22,7 +22,17 @@ The Blosc Developer Team. SciPy Conference 2021.
 
 ## Who we are?
 
-Caterva is an open source project that has been created by Aleix Alcacer, member of the Blosc Development Team. The leader and founder of this group is Francesc Alted, an open source enthusiast responsible of projects like PyTables or Blosc. Other members are Nathan Moinvaziri, who is making great strides in making C-Blosc and C-Blosc2 more secure, Oscar Guiñon, who collaborated in implementing the multidimensional blocks in Caterva, and Marta Iborra, who is working in Blosc2 Python API.
+Caterva is an open source project that has been mainly developed by the Blosc Development Team (@Blosc2), whose members are:
+
+- Aleix Alcacer (@aleixalcacer), who created Caterva and developed most of its code. 
+
+- Francesc Alted (@FrancescAlted), the leader and founder of this group. He is an open source enthusiast responsible of projects like PyTables or Blosc. 
+
+- Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
+
+- Oscar Guiñon (@OscarGM98), who collaborated in implementing the multidimensional blocks in Caterva.
+
+- Marta Iborra (@Marta_Iborra4), who is working in Blosc2 Python API.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -39,11 +49,11 @@ Caterva is an open source project that has been created by Aleix Alcacer, member
 
 ## Background
 
-To understand Caterva it is important to know some terms that are directly related to it.
+To understand Caterva it is important to know some terms that are directly related to it:
 
-- Data compression is the process of encoding, restructuring or otherwise modifying data in order to reduce its size. Caterva usually works with compressed datasets, making easier to the user to manipulate this processed data.
+- Data compression is the process of encoding data in order to reduce its size. Caterva usually works with compressed datasets, making easier to the user to manipulate this processed data.
 
-- Data chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks). Caterva algorithms implement a deeper level of this strategy to achieve better performance.
+- Data chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks). Caterva algorithms implement a second level of this strategy to achieve better performance.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -70,7 +80,7 @@ Todo:
 
 ### Use cases
 
-Caterva can be used for a great variety of datasets. However, when it really stands out is with multidimensional ones because not every library is prepared to handle these datasets once they are compressed. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, Caterva minimizes the amount of data it has to decompress to obtain the slice, and therefore the time it costs.
+Caterva can be used for a great variety of datasets. However, when it really stands out is with multidimensional ones because not every library is prepared to handle these datasets once they are compressed. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, Caterva minimizes the amount of data it has to decompress to obtain the slice, and therefore the time it takes.
 
 Accordingly, for cases where the slicing performance is crucial, Caterva turns out to be a good alternative to Zarr and HDF5.
 
@@ -96,7 +106,7 @@ Accordingly, for cases where the slicing performance is crucial, Caterva turns o
 
 <img src="static/two-level-chunking-slice.png" alt="Drawing" align="left" style="width: 50%;"/>
 
-Tradition chunking libraries store data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire superchunk. However, Caterva also introduces a new level of partitioning. Within each chunk, the data is re-chunked into smaller multidimensional sets called blocks.
+Tradition chunking libraries store data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire array. In addition, Caterva also introduces a new level of partitioning. Within each chunk, the data is repartitioned into smaller multidimensional sets called blocks.
 
 In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks containing the slice instead of the whole chunks.
 
@@ -407,17 +417,16 @@ While Zarr and HDF5 have to *reorganize* the data in chunks, Caterva has to *reo
 
 ## No data type info
 
-Caterva only stores variables itemsize instead of the type. Thanks to that:
+Caterva only stores itemsize instead of the type. The reasons for doing this are:
 
-- The library is more lightweight.
-- It provides a more general utility, allowing users to define their own custom data types via metalayers.
+- It provides more general flexibility, allowing users to define their own custom data types via metalayers.
+- The library is simpler.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Buffer and array protocol
 
-Despite not providing a specific type, Caterva supports both the buffer and array protocol. To do this, it defines the elements of the array as byte strings.
-
+Despite not providing a specific data type, Caterva supports both the buffer and array protocol. To use them, it interprets the elements of the array as byte strings.
 
 ```{code-cell} ipython3
 ---
@@ -495,7 +504,7 @@ b[0] = np.arange(5, dtype=dtype)
 c
 ```
 
-As can be seen, these changes also appear in the numpy array. That is because the data buffer is shared between the Caterva array and the Numpy array. Therefore, having the buffer and array protocols allow Caterva to share data between different libraries with 0 copies. 
+As can be seen, these changes also appear in the numpy array. That is because the data buffer is shared between the Caterva array and the Numpy array. Therefore, having the buffer and array protocols allow Caterva to share data between different libraries with 0 copies.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -565,9 +574,7 @@ assert a.meta.get("date") == a.meta["date"]
 a.meta["date"]
 ```
 
-Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating. 
-
-Use vl-metalayers (in the roadmap).
+Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating.
 
 ```{code-cell} ipython3
 a.meta["date"] = b"08/01/2021"
@@ -601,13 +608,13 @@ cat.remove(urlpath)
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-### Iron Array
+### ironArray
 
 ironArray is an example of a library built on top of Caterva. It is a lightweight, flexible and fast toolkit for managing floating-point datasets.
 
 The highlights of ironArray are:
 
-- High performance matrix and vector computations.
+- High performance array and vector computations.
 - Automatic data compression and decompression.
 - Contiguous or sparse storage.
 - Tunable performance optimizations that leverage your specific CPUs caches, memory and disks.
@@ -668,4 +675,4 @@ From the Caterva team we are glad to give a big thank to:
 
 - Huawei for making a donation that allowed us to get started with Caterva.
 
-- ironArray for making a donation to finish outlining Caterva.
+- ironArray SL for making a donation to finish outlining Caterva.
