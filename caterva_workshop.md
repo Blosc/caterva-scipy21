@@ -16,23 +16,24 @@ kernelspec:
 
 # Caterva: A Compressed And Multidimensional Container For Medium/Big Data
 
-The Blosc Developer Team. SciPy Conference 2021.
+The Blosc Development Team. SciPy Conference 2021.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Who we are?
 
-Caterva is an open source project that has been mainly developed by the Blosc Development Team (@Blosc2), whose members are:
+Caterva is an open source project that has been mainly developed by the Blosc Development Team (@Blosc2), whose current core members are:
 
 - Aleix Alcacer (@aleixalcacer), who created Caterva and developed most of its code. 
 
-- Francesc Alted (@FrancescAlted), the leader and founder of this group. He is an open source enthusiast responsible for projects like PyTables or Blosc. 
+- Oscar Guiñon (@OscarGM98), who implemented the second partitioning (blocks) in Caterva.
+
+- Marta Iborra (@Marta_Iborra4), who implemented support for sparse storage in Blosc2.
 
 - Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
 
-- Oscar Guiñon (@OscarGM98), who collaborated in implementing the multidimensional blocks in Caterva.
+- Francesc Alted (@FrancescAlted), the BDFL of the Blosc Development Team.
 
-- Marta Iborra (@Marta_Iborra4), who is working in Blosc2 Python API.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -40,9 +41,10 @@ Caterva is an open source project that has been mainly developed by the Blosc De
 
 1. **Background**
 1. Why Caterva?
-    1. Double partitioning. Getting and setting data
-    1. No data type info. Buffer and array protocols
-    1. Metalayers. ironArray
+    1. Double partitioning. Getting and setting data.
+    1. No data types. Buffer and array protocols.
+    1. Metalayers.
+1. ironArray and ironArray Community Edition
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -61,9 +63,10 @@ To understand Caterva it is important to know some terms that are directly relat
 
 1. Background
 1. **Why Caterva?**
-    1. Double partitioning. Getting and setting data
-    1. No data type info. Buffer and array protocols
-    1. Metalayers. ironArray
+    1. Double partitioning. Getting and setting data.
+    1. No data types. Buffer and array protocols.
+    1. Metalayers.
+1. ironArray and ironArray Community Edition
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}, "cell_style": "center"}
@@ -87,9 +90,9 @@ Todo:
 
 ### Use cases
 
-Caterva can be used for a great variety of datasets. However, when it really stands out is with multidimensional ones because not every library is prepared to handle these datasets once they are compressed. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, Caterva minimizes the amount of data it has to decompress to obtain the slice, and therefore the time it takes.
+Caterva can be used for a great variety of scenarios. However, where it really stands out is with multidimensional ones. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, it minimizes the amount of data that has to decompress so as to get the slice, and therefore the time it takes.
 
-Accordingly, for cases where the slicing performance is crucial, Caterva turns out to be a good alternative to Zarr and HDF5.
+Accordingly, for cases where the slicing performance is important, Caterva turns out to be a good alternative to other solutions like Zarr or HDF5.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -97,9 +100,10 @@ Accordingly, for cases where the slicing performance is crucial, Caterva turns o
 
 1. Background
 1. Why Caterva?
-    1. **Double partitioning. Getting and setting data**
-    1. No data type info. Buffer and array protocols
-    1. Metalayers. ironArray
+    1. **Double partitioning. Getting and setting data.**
+    1. No data types. Buffer and array protocols.
+    1. Metalayers.
+1. ironArray and ironArray Community Edition
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -180,7 +184,7 @@ h_data = f["data"]
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Finally, some hyperplanes from the chunked arrays are extracted and the performance is measured using the [*memprofiler*](https://github.com/aleixalcacer/memprofiler) plugin for jupyter.
+Finally, some hyperplanes from the chunked arrays are extracted, and the performance is measured using the [*memprofiler*](https://github.com/aleixalcacer/memprofiler) plugin for jupyter.
 
 ```{code-cell} ipython3
 ---
@@ -293,7 +297,7 @@ dtype = np.dtype("f8")
 itemsize = dtype.itemsize
 ```
 
-Then, an empty array for each library are created with the previous parameters.
+Then, an empty array for each library is created with the previous parameters.
 
 ```{code-cell} ipython3
 ---
@@ -407,10 +411,8 @@ slideshow:
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized dimension.
-
-While Zarr and HDF5 only have to *reorganize* the data in chunks, Caterva has more work to do. As we explained, it 
-also has to perform a second *reorganization* of the data because of the blocks repartition.
+In this case, the performance is also similar in the optimized dimension. However, there are differences in the non-optimized dimension. This because while Zarr and HDF5 only have to *reorganize* the data in chunks, Caterva has more work to do. As we explained, it 
+also has to perform a second *reorganization* of the data because of the additional repartition for blocks.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -418,25 +420,26 @@ also has to perform a second *reorganization* of the data because of the blocks 
 
 1. Background
 1. Why Caterva?
-    1. Double partitioning. Getting and setting data
-    1. **No data type info. Buffer and array protocols**
-    1. Metalayers. ironArray
+    1. Double partitioning. Getting and setting data.
+    1. **No data types. Buffer and array protocols.**
+    1. Metalayers.
+1. ironArray and ironArray Community Edition
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-## No data type info
+## No data types
 
-Caterva only stores itemsize instead of the type. The reasons for doing this are:
+Caterva only stores item size instead of the data type. The reasons for doing this are:
 
-- It provides more general flexibility, allowing users to define their own custom data types via metalayers.
-- The library is simpler.
+- It provides more flexibility, allowing users to define their own custom data types via metalayers.
+- The Caterva library becomes *much* simpler, and hence maintainable.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Buffer and array protocol
 
-Despite not providing a specific data type, Caterva supports both the buffer and array protocol. Lets see how it works!
+Despite not providing a specific data type, Caterva supports both the buffer and array protocol. Let's see how it works.
 
 ```{code-cell} ipython3
 ---
@@ -490,8 +493,7 @@ c = np.asarray(b)
 c
 ```
 
-As we can see, if we create a NumPy array from a Caterva array, the data type inferred is a byte string. Caterva 
-assigns internally this data type because it is needed to implement the protocols.
+So in this case the data type inferred is a byte string. Caterva assigns internally this data type because it is needed to implement the protocols.
 
 In order to obtain the original array, a cast to the data has to be performed.
 
@@ -527,9 +529,10 @@ between different libraries without copies.
 
 1. Background
 1. Why Caterva?
-    1. Double partitioning. Getting and setting data
-    1. No data type info. Buffer and array protocols
-    1. **Metalayers. ironArray**
+    1. Double partitioning. Getting and setting data.
+    1. No data types. Buffer and array protocols.
+    1. **Metalayers.**
+1. ironArray and ironArray Community Edition
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -575,13 +578,13 @@ slideshow:
 a = cat.open(urlpath)
 ```
 
-In the second place, we get the name of all metalayers on the array:
+Then we get the name of all metalayers on the array:
 
 ```{code-cell} ipython3
 a.meta.keys()
 ```
 
-Now we get the informatrion stored in the *date* metalayer:
+With that, we can get the information stored in e.g. the *date* metalayer:
 
 ```{code-cell} ipython3
 assert a.meta.get("date") == a.meta["date"]
@@ -589,7 +592,7 @@ assert a.meta.get("date") == a.meta["date"]
 a.meta["date"]
 ```
 
-Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating.
+Now, let's update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can **not** change, so you must be careful when updating.
 
 ```{code-cell} ipython3
 a.meta["date"] = b"08/01/2021"
@@ -601,7 +604,7 @@ except ValueError as err:
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Finally, you must know that Caterva introduces by itself a metalayer in the beginning of the array storing the multidimensional information. You can inspect this Caterva metalayer easily:
+Finally, you must know that Caterva introduces a metalayer in the array storing the multidimensional information. You can inspect such metalayer easily:
 
 ```{code-cell} ipython3
 ---
@@ -623,9 +626,20 @@ cat.remove(urlpath)
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
+## Poster Outline
+
+1. Background
+1. Why Caterva?
+    1. Double partitioning. Getting and setting data.
+    1. No data types. Buffer and array protocols.
+    1. Metalayers.
+1. **ironArray and ironArray Community Edition**
+1. Future Work
+
+
 ### ironArray
 
-ironArray is an example of a library built on top of Caterva. It is a lightweight, flexible and fast toolkit for managing floating-point datasets.
+ironArray is a library built on top of Caterva. It is a powerful, flexible and fast toolkit for managing and computing with floating-point datasets.
 
 The highlights of ironArray are:
 
@@ -638,9 +652,9 @@ For more information about ironArray, see: https://ironarray.io
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### ironArray CE
+#### ironArray Community Edition
 
-ironArray CE is the open source part of ironArray. It implements the support for simple and double floating-point data using a metalayer. With ironArray CE you can extract slices from floating-point datasets in a simple way!
+ironArray Community Edition (or CE for short) is the open source counterpart of ironArray. It implements the support for simple and double floating-point data using a metalayer. With ironArray CE you can extract slices from floating-point datasets in a simple way!
 
 ```{code-cell} ipython3
 # import iarrayce as ia
@@ -667,7 +681,9 @@ ironArray CE is the open source part of ironArray. It implements the support for
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### Computation performance
+#### Computation performance in ironArray
+
+In order to better grasp what compression can bring to high performance computing, and in particular, how it can contribute to break the memory wall, let's see an example of computation with actual data (coming from a precipitation dataset).
 
 In this plot, we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
 
@@ -675,7 +691,7 @@ In this plot, we can see the performance of ironArray (*ia*) and NumPy (*np*) co
     <img src="static/iron-array.png" alt="Drawing" style="width: 75%;"/>
 </div>
 
-The nice thing about ironArray is that it lets you dial what you prefer very easily: choose between speed, compression ratio or a balance among the two (the default) at your will. And it will do this while keeping very good execution times.
+The nice thing about ironArray is that it lets you dial what you prefer very easily: choose between speed, compression ratio or a balance among the two (the default) at your will. And will do this while keeping outstanding execution times.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -683,33 +699,34 @@ The nice thing about ironArray is that it lets you dial what you prefer very eas
 
 1. Background
 1. Why Caterva?
-    1. Double partitioning. Getting and setting data
-    1. No data type info. Buffer and array protocols
-    1. Metalayers. ironArray
+    1. Double partitioning. Getting and setting data.
+    1. No data types. Buffer and array protocols.
+    1. Metalayers.
+1. ironArray and ironArray Community Edition
 1. **Future Work**
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Future Work
 
-- Resize array dimensions: this will allow to increase or decrease in size any dimension of the arrays.
+- Resize array dimensions.
 
 - Improve slicing capabilities: currently Caterva only supports basic slicing based on start:stop ranges; we would like to extend this to start:stop:step as well as selections based on an array of booleans (similar to NumPy).
 
-- Provide Python wheels: this will make the installation much more easier for the user.
+- Provide Python wheels: this will make the installation much easier for the user.
 
-- Introduce variable-length metalayers: this would provide users a lot of flexibility to define their own metadata.
+- Support for variable-length metalayers: this would provide users a lot of flexibility to define their own metadata.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Acknowledgments
 
-From the Caterva team we are glad to give a big thank to:
+The Blosc team would like to thank our sponsors:
 
-- SciPy for allowing us to participate in the congress.
+- Huawei for making a generous donation that allowed us to get started with Caterva.
 
-- The NumFOCUS foundation for sponsoring Blosc.
-
-- Huawei for making a donation that allowed us to get started with Caterva.
+- The NumFOCUS foundation for many different.
 
 - ironArray SL for making a donation to finish outlining Caterva.
+
+Last but not least, thanks to the SciPy Conference for enabling the opportunity to introduce Caterva to the community.
