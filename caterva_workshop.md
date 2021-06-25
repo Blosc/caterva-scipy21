@@ -32,7 +32,7 @@ Caterva is an open source project that has been mainly developed by the Blosc De
 
 - Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
 
-- Francesc Alted (@FrancescAlted), the BDFL of the Blosc Development Team.
+- Francesc Alted (@FrancescAlted), acting as BDFL of the Blosc Development Team.
 
 
 +++ {"slideshow": {"slide_type": "slide"}}
