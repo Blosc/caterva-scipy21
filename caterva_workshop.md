@@ -22,9 +22,7 @@ The Blosc Developer Team. SciPy Conference 2021.
 
 ## Who we are?
 
-
-Caterva is an open source project that has been created by Aleix Alcacer, member of the Blosc Development Team. The leader and founder of this group is Francesc Alted,
-an open source enthusiast responsible of projects like PyTables or Blosc.
+Caterva is an open source project that has been created by Aleix Alcacer, member of the Blosc Development Team. The leader and founder of this group is Francesc Alted, an open source enthusiast responsible of projects like PyTables or Blosc. Other members are Nathan Moinvaziri, who is making great strides in making C-Blosc and C-Blosc2 more secure, Oscar Guiñon, who collaborated in implementing the multidimensional blocks in Caterva, and Marta Iborra, who is working in Blosc2 Python API.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -483,7 +481,7 @@ You can use metalayers for adapting Caterva containers to your own needs.
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-We create an array with one metalayer storing some info.
+First, we define the shape and the chunks and blocks for the arrays. Then, we create an array with one metalayer storing a date.
 
 ```{code-cell} ipython3
 ---
@@ -515,13 +513,13 @@ slideshow:
 a = cat.open(urlpath)
 ```
 
-Get the name of all metalayers on the array:
+In the second place, we get the name of all metalayers on the array:
 
 ```{code-cell} ipython3
 a.meta.keys()
 ```
 
-Get the informatrion stored in the *date* metalayer:
+Now we get the informatrion stored in the *date* metalayer:
 
 ```{code-cell} ipython3
 assert a.meta.get("date") == a.meta["date"]
@@ -529,7 +527,9 @@ assert a.meta.get("date") == a.meta["date"]
 a.meta["date"]
 ```
 
-Update the content of the *date* metalayer. Comment that the length of the metalayer can not change. Use vl-metalayers (in the roadmap).
+Once we know the information, we update the content of the *date* metalayer. It is important to remember that the length of a Caterva metalayer can not change, so you must be careful when updating. 
+
+Use vl-metalayers (in the roadmap).
 
 ```{code-cell} ipython3
 a.meta["date"] = b"08/01/2021"
@@ -541,7 +541,7 @@ except ValueError as err:
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
-Caterva introduces by iteself a metalayer storing the multidimensional information. Inspect Caterva metalayer.
+Finally, you must know that Caterva introduces by itself a metalayer in the beginning of the array storing the multidimensional information. You can inspect this Caterva metalayer easily:
 
 ```{code-cell} ipython3
 ---
