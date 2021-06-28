@@ -18,6 +18,14 @@ kernelspec:
 
 The Blosc Development Team. SciPy Conference 2021.
 
+
+<table style="width:100%">
+<tr>
+    <td align="right"> <img src="static/caterva-logo.png" alt="Drawing" style="height: 100px;"/> </td>
+    <td align="left"> <img src="static/blosc-logo.png" alt="Drawing" style="height: 80px;"/> </td>
+</tr>
+    </table>
+
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Who we are?
@@ -73,6 +81,10 @@ To understand Caterva it is important to know some terms that are directly relat
 
 ## Why Caterva?
 
+<div style="text-align: center;">
+    <img src="static/caterva.png" alt="Drawing" style="width: 20%;"/>
+</div>
+
 Caterva is a C library for handling multi-dimensional, chunked, compressed datasets in an easy and fast way. 
 
 * Performant: leverage double partitioning for fast slicing.
@@ -80,11 +92,6 @@ Caterva is a C library for handling multi-dimensional, chunked, compressed datas
 * Type-less: flexibly define your own data types as metalayers.
 * Open source: https://github.com/Blosc/python-caterva.
 
-
-
-Todo:
-
-- Insert Caterva image
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -110,13 +117,10 @@ Accordingly, for cases where the slicing performance is important, Caterva turns
 
 ## Double partitioning
 
-<!--
-    ![title](static/two-level-chunking-slice.png)
--->
 
-
-<img src="static/two-level-chunking-slice.png" alt="Drawing" align="left" style="width: 50%;"/>
-
+<div style="text-align: center;">
+    <img src="static/data.png" alt="Data" style="width: 45%;"/>
+</div>
 Other chunking libraries store data into multidimensional chunks, which makes slices extraction from compressed data more efficient since only the chunks containing the slices are decompressed instead of the entire array. 
 
 In addition, Caterva also introduces a new level of partitioning. Within each chunk, the data is repartitioned into smaller multidimensional sets called blocks.
@@ -538,6 +542,10 @@ between different libraries without copies.
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ## Metalayers
+
+<div style="text-align: center;">
+    <img src="static/meta.png" alt="Drawing" style="width: 20%;"/>
+</div>
 
 Metalayers are small metadata for informing about the kind of data that is stored on a Caterva container.
 Caterva specifies a metalayer on top of a Blosc2 container for storing multidimensional information. This metalayer can be modified so that the shapes can be updated.
