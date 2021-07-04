@@ -30,7 +30,8 @@ The Blosc Development Team. SciPy Conference 2021.
 
 ## What Is Caterva?
 
-Caterva is a C and Python library that implements a compressed and multidimensional container.
+Caterva is a C and Python library and a format that implements a compressed and multidimensional container.
+
 It is different from existing solutions like HDF5 or Zarr in:
 
 * **Higher performance**: support for double partitioning.
@@ -123,7 +124,7 @@ Other chunking libraries store data into multidimensional chunks, which makes sl
 
 In addition, Caterva also introduces a new level of partitioning. Within each chunk, the data is repartitioned into smaller multidimensional sets called blocks.
 
-In this way, Caterva can read blocks individually (and also in parallel) instead of chunks, which improves slices extraction by decompressing only the blocks containing the slice instead of the whole chunks.
+In this way, Caterva can read blocks individually (and also in parallel) instead of whole chunks, which improves slices extraction by decompressing only those blocks containing the slice.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -435,7 +436,8 @@ also has to perform a second *reorganization* of the data because of the additio
 Caterva only stores item size instead of the data type. The reasons for doing this are:
 
 - It provides more flexibility, allowing users to define their own custom data types via metalayers.
-- The Caterva library becomes *much* simpler, and hence maintainable.
+- The Caterva library becomes *much* simpler, and hence more maintainable.
+- New libraries can be built on top of Caterva that define their own data types (e.g. ironArray).
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -643,6 +645,8 @@ cat.remove(urlpath)
 1. Future Work
 
 
++++ {"slideshow": {"slide_type": "slide"}}
+
 ### ironArray
 
 ironArray is a library built on top of Caterva. It is a powerful, flexible and fast toolkit for managing and computing with floating-point datasets.
@@ -660,7 +664,9 @@ For more information about ironArray, see: https://ironarray.io
 
 #### ironArray Community Edition
 
-ironArray Community Edition (or CE for short) is the open source counterpart of ironArray. It implements the support for simple and double floating-point data using a metalayer. With ironArray CE you can extract slices from floating-point datasets in a simple way!
+ironArray Community Edition (or CE for short) is the open source counterpart of ironArray. It has been developed to mimic the same API than h5py or Zarr.  It implements the support for simple and double floating-point data using a metalayer.  With ironArray CE you can extract slices from floating-point datasets in a simple way!
+
+For more information about ironArray Community Edition, see: https://ironarray.io/products
 
 ```{code-cell} ipython3
 # import iarrayce as ia
@@ -689,15 +695,13 @@ ironArray Community Edition (or CE for short) is the open source counterpart of 
 
 #### Computation performance in ironArray
 
-In order to better grasp what compression can bring to high performance computing, and in particular, how it can contribute to break the memory wall, let's see an example of computation with actual data (coming from a precipitation dataset).
-
-In this plot, we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
+In order to better grasp what compression can bring to high performance computing, and in particular, how it can contribute to break the memory wall, let's see an example of computation with actual data (coming from a precipitation dataset).  Below we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
 
 <div style="text-align: center;">
     <img src="static/iron-array.png" alt="Drawing" style="width: 75%;"/>
 </div>
 
-The nice thing about ironArray is that it lets you dial what you prefer very easily: choose between speed, compression ratio or a balance among the two (the default) at your will. And will do this while keeping outstanding execution times.
+ironArray will use state-of-the-art Artificial Intelligence algorithms for keeping outstanding execution times.  Choose between speed, compression ratio or a balance among the two (the default) at your will.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
