@@ -28,20 +28,18 @@ The Blosc Development Team. SciPy Conference 2021.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-## Who we are?
+## What Is Caterva?
 
-Caterva is an open source project that has been mainly developed by the Blosc Development Team (@Blosc2), whose current core members are:
+Caterva is a C and Python library that implements a compressed and multidimensional container.
+It is different from existing solutions like HDF5 or Zarr in:
 
-- Aleix Alcacer (@aleixalcacer), who created Caterva and developed most of its code. 
-
-- Oscar Guiñon (@OscarGM98), who implemented the second partitioning (blocks) in Caterva.
-
-- Marta Iborra (@Marta_Iborra4), who implemented support for sparse storage in Blosc2.
-
-- Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
-
-- Francesc Alted (@FrancescAlted), acting as BDFL of the Blosc Development Team.
-
+* **Higher performance**: support for double partitioning.
+* **Improved compression** capabilities based on the new Blosc2 meta-compressor:
+  * 64-bit containers
+  * Data can be in-memory or on disk (persistent).
+  * Filter pipeline. Use different filters simultaneously.
+  * Plugin capabilities for filters and codecs: tailor it to your needs.
+  * SIMD support for Intel, ARM and PowerPC.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -724,6 +722,23 @@ The nice thing about ironArray is that it lets you dial what you prefer very eas
 - Provide Python wheels: this will make the installation much easier for the user.
 
 - Support for variable-length metalayers: this would provide users a lot of flexibility to define their own metadata.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
+## Who we are?
+
+Caterva is an open source project that has been mainly developed by the Blosc Development Team (@Blosc2), whose current core members are:
+
+- Aleix Alcacer (@aleixalcacer), who created Caterva and developed most of its code. 
+
+- Oscar Guiñon (@OscarGM98), who implemented the second partitioning (blocks) in Caterva.
+
+- Marta Iborra (@Marta_Iborra4), who implemented support for sparse storage in Blosc2.
+
+- Nathan Moinvaziri (@nmnvzr), who is making great strides in making C-Blosc and C-Blosc2 more secure.
+
+- Francesc Alted (@FrancescAlted), acting as BDFL of the Blosc Development Team.
+
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
