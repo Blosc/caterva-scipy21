@@ -16,7 +16,7 @@ kernelspec:
 
 # Caterva: A Compressed And Multidimensional Container For Medium/Big Data
 
-The Blosc Development Team. SciPy Conference 2021.
+Francesc Alted, Aleix Alcacer and Christian Steiner. SciPy Conference 2021.
 
 
 <table style="width:100%">
