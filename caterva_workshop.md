@@ -94,7 +94,6 @@ Caterva is a C library for handling multi-dimensional, chunked, compressed datas
 * Type-less: flexibly define your own data types as metalayers.
 * Open source: https://github.com/Blosc/python-caterva.
 
-
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Use cases
@@ -278,6 +277,8 @@ slideshow:
 %mprof_barplot --title "Getting data" --variable time --groupby 1 .*
 ```
 
+(lower is better)
+
 +++ {"slideshow": {"slide_type": "subslide"}}
 
 As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you only have to decompress the blocks containing the slice instead of the hole chunk.
@@ -414,6 +415,8 @@ slideshow:
 ---
 %mprof_barplot --title "Setting data" --variable time --groupby 1 .*
 ```
+
+(lower is better)
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -555,7 +558,9 @@ Caterva specifies a metalayer on top of a Blosc2 container for storing multidime
 
 You can use metalayers for adapting Caterva containers to your own needs.
 
-+++ {"slideshow": {"slide_type": "subslide"}}
++++ {"slideshow": {"slide_type": "slide"}}
+
+### Caterva metalayer
 
 First, we define the shape and the chunks and blocks for the arrays. Then, we create an array with one metalayer storing a date.
 
@@ -647,10 +652,15 @@ cat.remove(urlpath)
 1. **ironArray and ironArray Community Edition**
 1. Future Work
 
++++ {"slideshow": {"slide_type": "slide"}}
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### ironArray
+
+<div style="text-align: center;">
+    <img src="static/ia-logo.png" alt="Drawing" style="width: 30%;"/>
+</div>
 
 ironArray is a library built on top of Caterva. It is a powerful, flexible and fast toolkit for managing and computing with floating-point datasets.
 
@@ -667,31 +677,53 @@ For more information about ironArray, see: https://ironarray.io
 
 #### ironArray Community Edition
 
+<div style="text-align: center;">
+    <img src="static/ia-logo.png" alt="Drawing" style="width: 30%;"/>
+</div>
+
 ironArray Community Edition (or CE for short) is the open source counterpart of ironArray. It has been developed to mimic the same API than h5py or Zarr.  It implements the support for simple and double floating-point data using a metalayer.  With ironArray CE you can extract slices from floating-point datasets in a simple way!
 
 For more information about ironArray Community Edition, see: https://ironarray.io/products
 
 ```{code-cell} ipython3
-# import iarrayce as ia
-# import numpy as np
+---
+slideshow:
+  slide_type: '-'
+---
+import iarrayce as ia
+import numpy as np
 
-# shape = (1_000, 1_000)
+shape = (1_000, 1_000)
 
-# chunks = (500, 500)
-# blocks = (100, 100)
-# dtype = np.float64
-
-# data = ia.zeros(shape, dtype=dtype, chunks=chunks, blocks=blocks, codec=ia.Codec.LZ4)
-
-# data.info
+chunks = (500, 500)
+blocks = (100, 100)
+dtype = np.float64
 ```
 
 ```{code-cell} ipython3
-# data[0] = np.linspace(0, 1, shape[1], dtype=dtype)
+---
+slideshow:
+  slide_type: subslide
+---
+data = ia.zeros(shape, dtype=dtype, chunks=chunks, blocks=blocks, codec=ia.Codecs.LZ4)
 
-# s = data[1, 20:-80]
+data.info
+```
 
-# s
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+data[0] = np.linspace(0, 1, shape[1], dtype=dtype)
+
+s = data[0, 250:-740]
+
+type(s)
+```
+
+```{code-cell} ipython3
+s
 ```
 
 +++ {"slideshow": {"slide_type": "slide"}}
