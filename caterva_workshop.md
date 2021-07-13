@@ -274,10 +274,8 @@ f.close()
 slideshow:
   slide_type: subslide
 ---
-%mprof_barplot --title "Getting data" --variable time --groupby 1 .*
+%mprof_barplot --title "Getting data (lower is better)" --variable time --groupby 1 .*
 ```
-
-(lower is better)
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -413,10 +411,8 @@ f.close()
 slideshow:
   slide_type: subslide
 ---
-%mprof_barplot --title "Setting data" --variable time --groupby 1 .*
+%mprof_barplot --title "Setting data (lower is better)" --variable time --groupby 1 .*
 ```
-
-(lower is better)
 
 +++ {"slideshow": {"slide_type": "subslide"}}
 
@@ -651,8 +647,6 @@ cat.remove(urlpath)
     1. Metalayers.
 1. **ironArray and ironArray Community Edition**
 1. Future Work
-
-+++ {"slideshow": {"slide_type": "slide"}}
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
