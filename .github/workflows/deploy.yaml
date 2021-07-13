@@ -17,6 +17,8 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
+          python -m venv .venv
+          source .venv/bin/activate
           python -m pip install --upgrade -r requirements.txt
           ./generate_slides.sh
 
