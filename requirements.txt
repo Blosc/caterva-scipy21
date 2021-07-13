@@ -5,7 +5,8 @@ numpy==1.20.3
 caterva==0.5.3
 memprofiler== 0.1.7
 zarr==2.8.3
-pandas  # Fix
+pandas  # Fix memprofiler
+msgpack
 h5py
 hdf5plugin
 iarrayce
