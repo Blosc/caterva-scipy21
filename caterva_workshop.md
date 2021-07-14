@@ -54,7 +54,7 @@ https://github.com/Blosc/python-caterva/
     1. Double partitioning. Getting and setting data.
     1. No data types. Buffer and array protocols.
     1. Metalayers.
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -76,7 +76,7 @@ To understand Caterva it is important to know some terms that are directly relat
     1. Double partitioning. Getting and setting data.
     1. No data types. Buffer and array protocols.
     1. Metalayers.
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}, "cell_style": "center"}
@@ -111,7 +111,7 @@ Accordingly, for cases where the slicing performance is important, Caterva turns
     1. **Double partitioning. Getting and setting data.**
     1. No data types. Buffer and array protocols.
     1. Metalayers.
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -428,7 +428,7 @@ also has to perform a second *reorganization* of the data because of the additio
     1. Double partitioning. Getting and setting data.
     1. **No data types. Buffer and array protocols.**
     1. Metalayers.
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -538,7 +538,7 @@ between different libraries without copies.
     1. Double partitioning. Getting and setting data.
     1. No data types. Buffer and array protocols.
     1. **Metalayers.**
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -645,7 +645,7 @@ cat.remove(urlpath)
     1. Double partitioning. Getting and setting data.
     1. No data types. Buffer and array protocols.
     1. Metalayers.
-1. **ironArray and ironArray Community Edition**
+1. **ironArray and ironArray Community**
 1. Future Work
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -669,15 +669,17 @@ For more information about ironArray, see: https://ironarray.io
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### ironArray Community Edition
+#### ironArray Community
 
 <div style="text-align: center;">
     <img src="static/ia-logo.png" alt="Drawing" style="width: 30%;"/>
 </div>
 
-ironArray Community Edition (or CE for short) is the open source counterpart of ironArray. It has been developed to mimic the same API than h5py or Zarr.  It implements the support for simple and double floating-point data using a metalayer.  With ironArray CE you can extract slices from floating-point datasets in a simple way!
+ironArray Community is the open source counterpart of ironArray. It has been developed to mimic the same API than 
+h5py or Zarr.  It implements the support for simple and double floating-point data using a metalayer.  With 
+the community edition of ironArray you can extract slices from floating-point datasets in a simple way!
 
-For more information about ironArray Community Edition, see: https://ironarray.io/products
+For more information about ironArray Community, see: https://ironarray.io/products
 
 ```{code-cell} ipython3
 ---
@@ -741,7 +743,7 @@ ironArray will use state-of-the-art Artificial Intelligence algorithms for keepi
     1. Double partitioning. Getting and setting data.
     1. No data types. Buffer and array protocols.
     1. Metalayers.
-1. ironArray and ironArray Community Edition
+1. ironArray and ironArray Community
 1. **Future Work**
 
 +++ {"slideshow": {"slide_type": "slide"}}
