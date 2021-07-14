@@ -43,6 +43,7 @@ It is different from existing solutions like HDF5 or Zarr in:
   * SIMD support for Intel, ARM and PowerPC.
 
 https://github.com/Blosc/caterva/
+
 https://github.com/Blosc/python-caterva/
 
 +++ {"slideshow": {"slide_type": "slide"}}
@@ -63,9 +64,9 @@ https://github.com/Blosc/python-caterva/
 
 To understand Caterva it is important to know some terms that are directly related to it:
 
-- Data compression is the process of encoding data in order to reduce its size. Caterva usually works with compressed datasets, making easier to the user to manipulate this processed data.
+- Data compression is the process of encoding data in order to reduce its size. Caterva usually works with compressed datasets, allowing for a more contained use of space in memory of on disk.
 
-- Data chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks). Caterva algorithms implement a second level of this strategy to achieve better performance.
+- Data chunking is a technique that consists of dividing a dataset into partitions of a specific size (chunks). In addition, Caterva algorithms implement a second level of partitioning to achieve better performance.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -98,7 +99,7 @@ Caterva is a C library for handling multi-dimensional, chunked, compressed datas
 
 ### Use cases
 
-Caterva can be used for a great variety of scenarios. However, where it really stands out is with multidimensional ones. Specifically, Caterva is really useful for extracting slices of compressed data because, thanks to the chunking machinery it implements, it minimizes the amount of data that has to decompress so as to get the slice, and therefore the time it takes.
+Caterva can be used for a great variety of scenarios. However, where it really stands out is with multidimensional ones. Specifically, Caterva is really useful for extracting slices of compressed data because, and thanks to the partitioning schema that it implements, it minimizes the amount of data that has to decompress so as to get the slice, making things faster.
 
 Accordingly, for cases where the slicing performance is important, Caterva turns out to be a good alternative to other solutions like Zarr or HDF5.
 
@@ -147,7 +148,7 @@ import hdf5plugin as h5plugin
 
 +++ {"slideshow": {"slide_type": "-"}}
 
-First, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
+First, shape, chunks and blocks parameters are defined. As we can see, the second dimension for those is smaller, and hence, optimized to extract hyperslices along it.
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
@@ -281,8 +282,6 @@ slideshow:
 
 As we can see in the graph, the slicing times are similar in the optimized dimension. However, Caterva performs better (by far) in the non-optimized dimension. This is because with double partitioning you only have to decompress the blocks containing the slice instead of the hole chunk.
 
-This is why Caterva can be a good alternative to these widely-used libraries.
-
 +++ {"slideshow": {"slide_type": "slide"}}
 
 ### Setting data
@@ -292,7 +291,7 @@ Now, we are going to update some hyperplanes from chunked arrays created with Ca
 
 +++
 
-First, some necessary parameters are defined.
+First, let's define some necessary parameters.
 
 ```{code-cell} ipython3
 shape = (8_000, 8_000)
@@ -549,10 +548,10 @@ between different libraries without copies.
     <img src="static/meta.png" alt="Drawing" style="width: 20%;"/>
 </div>
 
-Metalayers are small metadata for informing about the kind of data that is stored on a Caterva container.
-Caterva specifies a metalayer on top of a Blosc2 container for storing multidimensional information. This metalayer can be modified so that the shapes can be updated.
+Metalayers are small metadata for informing about the kind of data that is stored on a Blosc2 container.
+Caterva specifies its own metalayer for storing multidimensional information. This metalayer can be modified so that the shapes could be updated.
 
-You can use metalayers for adapting Caterva containers to your own needs.
+In general, you can use metalayers for adapting Blosc2 containers (and in particular, Caterva arrays) to your own needs.
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
@@ -669,13 +668,25 @@ For more information about ironArray, see: https://ironarray.io
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
+#### Computation performance in ironArray
+
+In order to better grasp what compression can bring to high performance computing, and in particular, how it can contribute to break the memory wall, let's see an example of computation with actual data (coming from a precipitation dataset).  Below we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
+
+<div style="text-align: center;">
+    <img src="static/iron-array.png" alt="Drawing" style="width: 75%;"/>
+</div>
+
+ironArray will use artificial intelligence algorithms for achieving outstanding execution times.  Choose between speed, compression ratio or a balance among the two (the default) at your will, and ironArray will decide the best parameters for completing the computation.
+
++++ {"slideshow": {"slide_type": "slide"}}
+
 #### ironArray Community
 
 <div style="text-align: center;">
     <img src="static/ia-logo.png" alt="Drawing" style="width: 30%;"/>
 </div>
 
-ironArray Community is the open source counterpart of ironArray. It has been developed to mimic the same API than 
+ironArray Community is the open source version of ironArray. It has been developed to mimic the same API than 
 h5py or Zarr.  It implements the support for simple and double floating-point data using a metalayer.  With 
 the community edition of ironArray you can extract slices from floating-point datasets in a simple way!
 
@@ -724,18 +735,6 @@ s
 
 +++ {"slideshow": {"slide_type": "slide"}}
 
-#### Computation performance in ironArray
-
-In order to better grasp what compression can bring to high performance computing, and in particular, how it can contribute to break the memory wall, let's see an example of computation with actual data (coming from a precipitation dataset).  Below we can see the performance of ironArray (*ia*) and NumPy (*np*) computing the mean of three datasets:
-
-<div style="text-align: center;">
-    <img src="static/iron-array.png" alt="Drawing" style="width: 75%;"/>
-</div>
-
-ironArray will use state-of-the-art Artificial Intelligence algorithms for keeping outstanding execution times.  Choose between speed, compression ratio or a balance among the two (the default) at your will.
-
-+++ {"slideshow": {"slide_type": "slide"}}
-
 ## Poster Outline
 
 1. Background
@@ -753,8 +752,6 @@ ironArray will use state-of-the-art Artificial Intelligence algorithms for keepi
 - Resize array dimensions.
 
 - Improve slicing capabilities: currently Caterva only supports basic slicing based on start:stop ranges; we would like to extend this to start:stop:step as well as selections based on an array of booleans (similar to NumPy).
-
-- Provide Python wheels: this will make the installation much easier for the user.
 
 - Support for variable-length metalayers: this would provide users a lot of flexibility to define their own metadata.
 
