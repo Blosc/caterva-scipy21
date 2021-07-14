@@ -7,7 +7,7 @@ jupytext:
     format_version: 0.13
     jupytext_version: 1.11.3
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -684,7 +684,7 @@ For more information about ironArray Community Edition, see: https://ironarray.i
 slideshow:
   slide_type: '-'
 ---
-import iarrayce as ia
+import iarray_community as ia
 import numpy as np
 
 shape = (1_000, 1_000)

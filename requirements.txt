@@ -1,12 +1,11 @@
 pygments>=2.4.1
-jupyterlab==3.0.16
+jupyter==1.0.0
 jupytext==1.11.3
 numpy==1.20.3
-caterva==0.5.3
-memprofiler== 0.1.7
+caterva>=0.5.3
+memprofiler==0.1.9
 zarr==2.8.3
-pandas  # Fix memprofiler
 msgpack
 h5py
 hdf5plugin
-iarrayce
+iarray-community==0.0.3
