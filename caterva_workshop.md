@@ -7,7 +7,7 @@ jupytext:
     format_version: 0.13
     jupytext_version: 1.11.3
 kernelspec:
-  display_name: Python 3 (ipykernel)
+  display_name: Python 3
   language: python
   name: python3
 ---
@@ -137,7 +137,35 @@ In this section, we are going to extract some hyperplanes from chunked arrays cr
 
 In these three libraries, the data is stored using chunks of Blosc (that internally are split in blocks). However, while Zarr and HDF5 only introduce multidimensionality for chunks, Caterva introduces it for both chunks and blocks.
 
+The chunks have also been optimized to extract hyperslices from the second dimension.
+
+<table>
+    <tr>
+        <td>
+            <img src="static/dim0.png" width=80% style="margin-left:0; margin-right:auto">
+        </td>
+        <td>
+           <img src="static/dim1.png" width=80% style="margin-left:auto; margin-right:0">
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;">
+            First dimension
+        </td>
+        <td style="text-align: center;">
+            Second dimension
+        </td>
+    </tr>
+</table>
+
+Thanks to the second level of partitioning, Caterva will decompress less data than the other formats.
+
+
 ```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
 import zarr
 import caterva as cat
 import numpy as np
