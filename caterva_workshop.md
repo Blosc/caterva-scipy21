@@ -224,6 +224,14 @@ for i in planes_dim0:
 slideshow:
   slide_type: subslide
 ---
+%mprof_plot caterva::dim0 zarr::dim0 hdf5::dim0 -t "Dimension 0 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
 planes_dim1 = np.random.randint(0, shape[1], 100)
 ```
 
@@ -254,6 +262,445 @@ slideshow:
 
 for i in planes_dim1:
     block = h_data[:, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim1 zarr::dim1 hdf5::dim1 -t "Dimension 1 computation"
+```
+
+```{code-cell} ipython3
+f.close()
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_barplot --title "Getting data" --variable time --groupby 1 .*
+```
+
++++ {"slideshow": {"slide_type": "-"}}
+
+First of all, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
+
+```{code-cell} ipython3
+shape = (800, 600, 50)
+chunks = (200, 100, 50)
+blocks = (20, 100, 10)
+dtype = np.dtype("f8")
+itemsize = dtype.itemsize
+```
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+Then, a Caterva array, a Zarr array and a HDF5 array are created from a NumPy array using the parameters defined before.
+
+```{code-cell} ipython3
+data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+c_data = cat.asarray(data, chunks=chunks, blocks=blocks)
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+z_data = zarr.array(data, chunks=chunks)
+```
+
+```{code-cell} ipython3
+f = h5.File('hdf5_file.h5', 'w', driver="core")
+f.create_dataset("data", shape, chunks=chunks, data=data, **h5plugin.Blosc())
+h_data = f["data"]
+```
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+Finally, some hyperplanes from the chunked arrays are extracted and the performance is measured using the [*memprofiler*](https://github.com/aleixalcacer/memprofiler) plugin for jupyter.
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+planes_dim0 = np.random.randint(0, shape[0], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim0
+
+for i in planes_dim0:
+    block = c_data[i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim0
+
+for i in planes_dim0:
+    block = z_data[i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim0
+
+for i in planes_dim0:
+    block = h_data[i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim0 zarr::dim0 hdf5::dim0 -t "Dimension 0 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+planes_dim1 = np.random.randint(0, shape[1], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim1
+
+for i in planes_dim1:
+    block = c_data[:, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim1
+
+for i in planes_dim1:
+    block = z_data[:, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim1
+
+for i in planes_dim1:
+    block = h_data[:, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim1 zarr::dim1 hdf5::dim1 -t "Dimension 1 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+planes_dim2 = np.random.randint(0, shape[2], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim2
+
+for i in planes_dim2:
+    block = c_data[:, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim2
+
+for i in planes_dim2:
+    block = z_data[:, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim2
+
+for i in planes_dim2:
+    block = h_data[:, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim2 zarr::dim2 hdf5::dim2 -t "Dimension 2 computation"
+```
+
+```{code-cell} ipython3
+f.close()
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_barplot --title "Getting data" --variable time --groupby 1 .*
+```
+
++++ {"slideshow": {"slide_type": "-"}}
+
+First of all, shape, chunks and blocks parameters are defined. As we can see, the second dimension is optimized to extract hyperslices.
+
+```{code-cell} ipython3
+shape = (400, 80, 100, 50)
+chunks = (100, 40, 10, 50)
+blocks = (30, 5, 2, 10)
+dtype = np.dtype("f8")
+itemsize = dtype.itemsize
+```
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+Then, a Caterva array, a Zarr array and a HDF5 array are created from a NumPy array using the parameters defined before.
+
+```{code-cell} ipython3
+data = np.arange(np.prod(shape), dtype=dtype).reshape(shape)
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+c_data = cat.asarray(data, chunks=chunks, blocks=blocks)
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+z_data = zarr.array(data, chunks=chunks)
+```
+
+```{code-cell} ipython3
+f = h5.File('hdf5_file.h5', 'w', driver="core")
+f.create_dataset("data", shape, chunks=chunks, data=data, **h5plugin.Blosc())
+h_data = f["data"]
+```
+
++++ {"slideshow": {"slide_type": "subslide"}}
+
+Finally, some hyperplanes from the chunked arrays are extracted and the performance is measured using the [*memprofiler*](https://github.com/aleixalcacer/memprofiler) plugin for jupyter.
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+planes_dim0 = np.random.randint(0, shape[0], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim0
+
+for i in planes_dim0:
+    block = c_data[i, :, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim0
+
+for i in planes_dim0:
+    block = z_data[i, :, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim0
+
+for i in planes_dim0:
+    block = h_data[i, :, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim0 zarr::dim0 hdf5::dim0 -t "Dimension 0 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+planes_dim1 = np.random.randint(0, shape[1], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim1
+
+for i in planes_dim1:
+    block = c_data[:, i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim1
+
+for i in planes_dim1:
+    block = z_data[:, i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim1
+
+for i in planes_dim1:
+    block = h_data[:, i, :, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim1 zarr::dim1 hdf5::dim1 -t "Dimension 1 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+planes_dim2 = np.random.randint(0, shape[2], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim2
+
+for i in planes_dim2:
+    block = c_data[:, :, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim2
+
+for i in planes_dim2:
+    block = z_data[:, :, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim2
+
+for i in planes_dim2:
+    block = h_data[:, :, i, :]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim2 zarr::dim2 hdf5::dim2 -t "Dimension 2 computation"
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+planes_dim3 = np.random.randint(0, shape[3], 100)
+```
+
+```{code-cell} ipython3
+%%mprof_run -q caterva::dim3
+
+for i in planes_dim3:
+    block = c_data[:, :, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q zarr::dim3
+
+for i in planes_dim3:
+    block = z_data[:, :, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: '-'
+---
+%%mprof_run -q hdf5::dim3
+
+for i in planes_dim3:
+    block = h_data[:, :, :, i]
+```
+
+```{code-cell} ipython3
+---
+slideshow:
+  slide_type: subslide
+---
+%mprof_plot caterva::dim3 zarr::dim3 hdf5::dim3 -t "Dimension 3 computation"
 ```
 
 ```{code-cell} ipython3
